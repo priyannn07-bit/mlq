@@ -1,0 +1,7 @@
+{
+  "buildCommand": "sh scripts/build.sh",
+  "outputDirectory": "public",
+  "functions": {
+    "api/schedule.js": { "includeFiles": "bin/**" }
+  }
+}
