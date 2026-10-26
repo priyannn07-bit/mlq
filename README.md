@@ -1,34 +1,12 @@
-# Multilevel Queue Scheduling Simulator
+# Pennywise — Micro-expense & Subscription Dashboard
 
-Full-stack implementation of the Multilevel Queue Scheduling PRD.
+Track expenses by category, compare monthly outgoings with a configurable budget, and identify subscriptions unused for two or more months. The dashboard follows the diagnosis rules in `MicroExpenseSubscriptionDiagnosis`.
 
-| Layer | Tech | Location |
-|---|---|---|
-| Frontend | HTML/CSS/JS (static) | `public/index.html` |
-| API | Vercel serverless function (Node) | `api/schedule.js` |
-| Scheduling engine | **C** | `backend/scheduler.c` |
+Run:
+    python -m pip install -r requirements.txt
+    python app.py
+Open http://127.0.0.1:5000 in your browser (keep the terminal running).
 
-The browser posts JSON to `/api/schedule`. The function validates it, pipes it to the compiled C binary (`bin/scheduler`), and returns the binary's JSON (Gantt chart, per-process metrics, averages).
-
-## Run locally
-```bash
-npm start        # compiles the C code, serves http://localhost:3000
-```
-Requires `gcc` and Node 18+.
-
-## Deploy: GitHub + Vercel
-```bash
-git init && git add . && git commit -m "Multilevel queue scheduler"
-git branch -M main
-git remote add origin https://github.com/<you>/<repo>.git
-git push -u origin main
-```
-Then on vercel.com: **Add New → Project → import the repo → Deploy**. No settings to change; `vercel.json` sets the build command (`gcc` compile) and bundles `bin/scheduler` into the function.
-
-If the Vercel build ever lacks `gcc`, deploy the same code with the included `Dockerfile` on Render, Railway or Fly.io instead.
-
-## Scheduling rules
-- Queue 1 is the highest priority. A lower queue runs only when every higher queue is empty.
-- Policies per queue: `FCFS`, `RR` (with quantum), `PRIORITY` (lower number runs first).
-- Preemption toggle: when on, a process arriving in a higher queue interrupts a running lower-queue process.
-- TAT = CT - AT, WT = TAT - BT, RT = first start - AT. Context-switch time is ignored.
+Data is stored in microexpense.db (SQLite, created automatically).
+The default monthly budget is ₹1,500 and can be changed on the Diagnosis tab.
+A new, empty database starts with the example expenses and subscriptions from the Java program. Existing data is kept unchanged.
